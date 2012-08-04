@@ -23,6 +23,7 @@ from cartridge.shop.models import Product, ProductVariation, Order, OrderItem
 from cartridge.shop.models import DiscountCode
 from cartridge.shop.utils import recalculate_discount, sign
 
+from settings import STRIPE_PUBLISHABLE_KEY
 
 # Set up checkout handlers.
 handler = lambda s: import_dotted_path(s) if s else lambda *args: None
@@ -262,7 +263,7 @@ def checkout_steps(request):
     CHECKOUT_STEP_FIRST = step == checkout.CHECKOUT_STEP_FIRST
     context = {"form": form, "CHECKOUT_STEP_FIRST": CHECKOUT_STEP_FIRST,
                "step_title": step_vars["title"], "step_url": step_vars["url"],
-               "steps": checkout.CHECKOUT_STEPS, "step": step}
+               "steps": checkout.CHECKOUT_STEPS, "step": step, "STRIPE_KEY": STRIPE_PUBLISHABLE_KEY}
     return render(request, template, context)
 
 
