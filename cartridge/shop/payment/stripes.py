@@ -13,7 +13,6 @@ def process(request, order_form, order):
     amount = order.total
     if request.method == "POST":
         try:
-            print request.POST['stripeToken']
             token = request.POST['stripeToken']
             charge = stripe.Charge.create(
                 amount=int(amount * 100), # amount in cents, again
@@ -21,39 +20,39 @@ def process(request, order_form, order):
                 card=token,
                 description=order,
             )
-            return charge
+            return charge['id']
+
         except (MultiValueDictKeyError, InvalidRequestError):
             CheckoutError("There was an error")
-
     else:
         CheckoutError("There was an error")
 
 
 # def create_stripe_customer(token,request):
-# 	customer = stripe.Customer.create(
-# 	    card=token,
-# 	    description=request.user,
-# 	)
-# 	return customer
+#   customer = stripe.Customer.create(
+#       card=token,
+#       description=request.user,
+#   )
+#   return customer
 
 # def get_customer(request):
-# 	if request.user.get_profile().stripe_customer:
-# 		customer = request.user.get_profile().stripe_customer
-# 		return customer
+#   if request.user.get_profile().stripe_customer:
+#       customer = request.user.get_profile().stripe_customer
+#       return customer
 
 # def save_customer(request,customer):
-# 	request.user.get_profile().stripe_customer = customer
-# 	request.user.get_profile().save()
+#   request.user.get_profile().stripe_customer = customer
+#   request.user.get_profile().save()
 
 # def pay_customer(request, customer):
 
-# 	amount = request.POST['amount'] * 100 #in dollars to cents
-# 	if request.method == "POST":
-# 		charge = stripe.Charge.create(
-# 		    amount=amount, # amount in cents, again
-# 		    currency="usd",
-# 		    customer=customer,
-# 		    description=request.user,
-# 		)
-# 		print 'success'
-# 		return charge
+#   amount = request.POST['amount'] * 100 #in dollars to cents
+#   if request.method == "POST":
+#       charge = stripe.Charge.create(
+#           amount=amount, # amount in cents, again
+#           currency="usd",
+#           customer=customer,
+#           description=request.user,
+#       )
+#       print 'success'
+#       return charge
